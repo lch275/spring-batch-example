@@ -9,7 +9,8 @@ spring:
     jdbc:
       initialize-schema: always  # 메타테이블 자동 생성
     job:
-      enabled: false  # 앱 기동 시 자동 실행 방지
+      enabled: true   # JobLauncherApplicationRunner 활성화
+      name: orderLoadJob  # 실행할 Job 이름
 
   jpa:
     hibernate:

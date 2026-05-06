@@ -12,7 +12,7 @@ public class OrderLoadItemProcessor implements ItemProcessor<OrderDTO, OrderDTO>
 
     @Override
     public OrderDTO process(OrderDTO item) {
-        log.debug("Processing order: {}", item);
+        log.info("Processing order: {}", item);
         return item;
     }
 }

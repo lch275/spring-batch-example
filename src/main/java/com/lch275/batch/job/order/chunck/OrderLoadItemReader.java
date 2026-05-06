@@ -1,6 +1,7 @@
 package com.lch275.batch.job.order.chunck;
 
 import com.lch275.batch.job.order.chunck.dto.OrderDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.core.io.ClassPathResource;
@@ -9,6 +10,7 @@ import org.springframework.core.io.ClassPathResource;
  * 주문 CSV 파일을 읽는 FlatFileItemReader 팩토리
  * CSV 헤더: order_id, product_name, quantity, price, order_date
  */
+@Slf4j
 public class OrderLoadItemReader {
 
     /**
