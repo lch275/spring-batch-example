@@ -1,6 +1,5 @@
 package com.lch275.batch.job.order;
 
-import com.lch275.batch.job.order.chunck.OrderLoadItemProcessor;
 import com.lch275.batch.job.order.chunck.dto.OrderDTO;
 import com.lch275.batch.job.order.domain.OrderRepository;
 import jakarta.persistence.EntityManagerFactory;
@@ -8,26 +7,24 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
-import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.WritableResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 @Slf4j
 @Configuration
@@ -42,6 +39,7 @@ public class OrderExportJobConfig {
     @Bean
     public Job orderExportJob() {
         return new JobBuilder("orderExportJob", jobRepository)
+                .incrementer(new RunIdIncrementer())
                 .start(orderExportStep())
                 .build();
     }
@@ -51,8 +49,7 @@ public class OrderExportJobConfig {
         return new StepBuilder("orderExportStep", jobRepository)
                 .<OrderDTO, OrderDTO>chunk(CHUNCK_SIZE, platformTransactionManager)
                 .reader(jpaPagingItemReader())
-                .writer(flatFileItemWriter())
-                .allowStartIfComplete(true)
+                .writer(flatFileItemWriter(null))
                 .build();
     }
 
@@ -67,7 +64,8 @@ public class OrderExportJobConfig {
     }
 
     @Bean
-    public FlatFileItemWriter<OrderDTO> flatFileItemWriter() {
+    @StepScope
+    public FlatFileItemWriter<OrderDTO> flatFileItemWriter(@Value("#{jobParameters['targetDate']}") String targetDate) {
 
         StringBuilder sb = new StringBuilder();
 
@@ -75,7 +73,7 @@ public class OrderExportJobConfig {
 
         sb.append("output/orders");
         sb.append("_");
-        sb.append(LocalDate.now(ZoneId.of("Asia/Seoul")).format(formatter));
+        sb.append(targetDate);
         sb.append(".csv");
 
         return new FlatFileItemWriterBuilder<OrderDTO>()

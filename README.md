@@ -148,13 +148,13 @@ Step의 흐름(순서, 조건 분기, 재시도 정책)을 한 파일에서 파�
 
 ### 1-2. DB → CSV 추출 배치
 - [ ] `JdbcPagingItemReader`로 orders 테이블에서 특정 날짜 범위의 데이터를 조회한다.
-- [ ] `FlatFileItemWriter`로 CSV 파일을 생성하며, 헤더 라인을 포함시킨다.
-- [ ] 출력 파일명에 실행일자를 포함시킨다 (예: `orders_20260329.csv`).
+- [X] `FlatFileItemWriter`로 CSV 파일을 생성하며, 헤더 라인을 포함시킨다.
+- [X] 출력 파일명에 실행일자를 포함시킨다 (예: `orders_20260329.csv`).
 
 ### 1-3. JobParameter 활용
-- [ ] `targetDate`를 JobParameter로 받아서 Reader의 WHERE 조건에 바인딩한다.
-- [ ] 같은 targetDate로 두 번 실행하면 `JobInstanceAlreadyCompleteException`이 발생하는 것을 확인한다.
-- [ ] `RunIdIncrementer`를 적용한 후 동일 파라미터로 재실행이 가능해지는 것을 확인한다.
+- [X] `targetDate`를 JobParameter로 받아서 Reader의 WHERE 조건에 바인딩한다.
+- [X] 같은 targetDate로 두 번 실행하면 `JobInstanceAlreadyCompleteException`이 발생하는 것을 확인한다.
+- [X] `RunIdIncrementer`를 적용한 후 동일 파라미터를 적용하면 지속적으로 재실행 가능
 
 ### 1-4. 메타테이블 동작 이해
 - [ ] Job 실행 후 `BATCH_JOB_INSTANCE`, `BATCH_JOB_EXECUTION`, `BATCH_STEP_EXECUTION` 테이블을 직접 조회한다.
